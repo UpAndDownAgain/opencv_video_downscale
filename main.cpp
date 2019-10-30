@@ -1,22 +1,19 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-int main(int argc, char **argv) {
-    cv::VideoCapture cap;
-    cv::Mat frame;
-    cap.open(argv[1]);
+#include "VideoDownScaler.h"
 
-    if(! cap.isOpened() ){
-        std::cerr << "error otevirani vide" << std::endl;
+int main(int argc, char **argv) {
+    if(argc != 2){
+        std::cerr << "Zadejte cestu k souboru jako argument" << std::endl;
         return -1;
     }
-    while(true){
-        cap >> frame;
-        if(frame.empty()){
-            break;
-        }
 
-    }
+    cv::VideoCapture cap(argv[1]);
+    std::string outFile = "downsized";
+    VideoDownScaler vid(cap);
+
+    vid.downsize(0.5, outFile);
 
     return 0;
 }

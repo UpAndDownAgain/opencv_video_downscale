@@ -5,17 +5,17 @@
 #ifndef OPENCV_VIDEO_DOWNSCALE_VIDEODOWNSCALER_H
 #define OPENCV_VIDEO_DOWNSCALE_VIDEODOWNSCALER_H
 
-#import <opencv2/opencv.hpp>
-#import <exception>
+#include <opencv2/opencv.hpp>
+#include <exception>
 
 class VideoDownScaler {
 private:
     cv::VideoCapture video;
     cv::VideoWriter *output;
-    cv::Mat frame;
 public:
     VideoDownScaler(cv::VideoCapture &cap): video(cap){};
     VideoDownScaler(std::string &inFile);
+    ~VideoDownScaler();
 
     void downsize(double ratio, std::string &outFile);
 };

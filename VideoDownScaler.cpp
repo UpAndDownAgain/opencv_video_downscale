@@ -12,13 +12,30 @@ VideoDownScaler::VideoDownScaler(std::string &inFile) {
 
 }
 
-void &VideoDownScaler::downsize(double ratio, std::string &outFile) {
+
+
+VideoDownScaler::~VideoDownScaler() {
+    video.release();
+}
+
+void VideoDownScaler::downsize(double ratio, std::string &outFile) {
     cv::Mat frame;
-    cv::Size originalSize;
+    cv::Mat transformedFrame;
 
-    video >> frame;
-    originalSize = frame.size();
+    double frame_width = video.get(CV_CAP_PROP_FRAME_WIDTH);
+    double frame_height = video.get(CV_CAP_PROP_FRAME_HEIGHT);
 
-    this->output = new cv::VideoWriter(outFile, CV_FOURCC('M','J','P', 'G'), 23,
-            cv::Size(originalSize.width * ratio, originalSize.height * ratio ));
+    this->output = new cv::VideoWriter(outFile, CV_FOURCC('M','J','P', 'G'), 1,
+                                       cv::Size(frame_width * ratio, frame_height * ratio ));
+
+    while(true){
+        video >> frame;
+        if(frame.empty()) break;
+
+        cv::resize(frame, transformedFrame, cv::Size(), ratio, ratio);
+        cv::cvtColor(transformedFrame, transformedFrame, cv::COLOR_RGB2BGR);
+        output->write(transformedFrame);
+    }
+
+    this->output->release();
 }
